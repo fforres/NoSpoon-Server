@@ -4,7 +4,9 @@
     "prebuild": "./node_modules/.bin/rimraf ./dist",
     "build": "./node_modules/.bin/tsc",
     "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
-    "watch:serve": "ts-node --inspect src/index.ts"
+    "watch:debug": "nodemon -e ts -w ./src -x npm run watch:serve:debug",
+    "watch:serve:debug": "ts-node --inspect --debug-brk src/index.ts",
+    "watch:serve": "ts-node src/index.ts"
   },
   "devDependencies": {
     "nodemon": "^1.12.1",
@@ -14,5 +16,8 @@
     "typescript": "^2.5.2",
     "typescript-eslint-parser": "^8.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/underscore": "^1.8.3",
+    "underscore": "^1.8.3"
+  }
 }

@@ -1,4 +1,3 @@
-// console.log('asdads');
-if (true) {
-  const asd = 's';
-}
+import generateName from './nameGenerator';
+
+const name = generateName();
