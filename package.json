@@ -25,6 +25,7 @@
     "dotenv": "^4.0.0",
     "fastify": "^0.28.2",
     "redis": "^2.8.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "uuid-random": "^1.0.6"
   }
 }

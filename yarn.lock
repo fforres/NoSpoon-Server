@@ -1762,6 +1762,10 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
+uuid-random@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/uuid-random/-/uuid-random-1.0.6.tgz#e722a9f4834094405c20f3b4f97c3a5a9562e32f"
+
 uuid@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
