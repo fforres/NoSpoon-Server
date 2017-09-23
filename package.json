@@ -2,14 +2,17 @@
   "scripts": {
     "lint": "./node_modules/.bin/tslint -c tslint.json ./src/**/*.ts",
     "prebuild": "./node_modules/.bin/rimraf ./dist",
-    "build": "./node_modules/.bin/tsc"
+    "build": "./node_modules/.bin/tsc",
+    "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
+    "watch:serve": "ts-node --inspect src/index.ts"
   },
   "devDependencies": {
+    "nodemon": "^1.12.1",
     "rimraf": "^2.6.2",
+    "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2",
     "typescript-eslint-parser": "^8.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
