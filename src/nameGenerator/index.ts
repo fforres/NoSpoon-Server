@@ -62,7 +62,7 @@ const animals = [
   'elefante',
 ];
 
-const randomNumber = () => Math.floor(Math.random() * 100) + 1;
+export const randomNumber = (higherLimit: number = 100) => Math.floor(Math.random() * higherLimit) + 1;
 const generator = (): string => `${sample(animals)}-${sample(adjectives)}-${randomNumber()}`;
 
 export default generator;

@@ -9,15 +9,21 @@
     "watch:serve": "ts-node src/index.ts"
   },
   "devDependencies": {
+    "debug": "^3.0.1",
     "nodemon": "^1.12.1",
     "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2",
-    "typescript-eslint-parser": "^8.0.0"
+    "typescript-eslint-parser": "^8.0.0",
+    "@types/debug": "^0.0.30",
+    "@types/dotenv": "^4.0.1",
+    "@types/redis": "^2.6.0",
+    "@types/underscore": "^1.8.3"
   },
   "dependencies": {
-    "@types/underscore": "^1.8.3",
+    "dotenv": "^4.0.0",
+    "redis": "^2.8.0",
     "underscore": "^1.8.3"
   }
 }
