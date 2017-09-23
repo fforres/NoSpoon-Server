@@ -17,7 +17,11 @@
     "typescript-eslint-parser": "^8.0.0"
   },
   "dependencies": {
+    "@types/dotenv": "^4.0.1",
+    "@types/redis": "^2.6.0",
     "@types/underscore": "^1.8.3",
+    "dotenv": "^4.0.0",
+    "redis": "^2.8.0",
     "underscore": "^1.8.3"
   }
 }
