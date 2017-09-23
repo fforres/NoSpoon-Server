@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "lint": "./node_modules/.bin/tslint -c tslint.json ./src/**/*.ts",
+    "lint": "./node_modules/.bin/tslint -c tslint.json ./src/**/*.ts --type-check -p ./tsconfig.json",
     "prebuild": "./node_modules/.bin/rimraf ./dist",
     "build": "./node_modules/.bin/tsc",
     "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
@@ -9,20 +9,21 @@
     "watch:serve": "ts-node src/index.ts"
   },
   "devDependencies": {
+    "@types/debug": "^0.0.30",
+    "@types/dotenv": "^4.0.1",
+    "@types/redis": "^2.6.0",
+    "@types/underscore": "^1.8.3",
     "debug": "^3.0.1",
     "nodemon": "^1.12.1",
     "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2",
-    "typescript-eslint-parser": "^8.0.0",
-    "@types/debug": "^0.0.30",
-    "@types/dotenv": "^4.0.1",
-    "@types/redis": "^2.6.0",
-    "@types/underscore": "^1.8.3"
+    "typescript-eslint-parser": "^8.0.0"
   },
   "dependencies": {
     "dotenv": "^4.0.0",
+    "fastify": "^0.28.2",
     "redis": "^2.8.0",
     "underscore": "^1.8.3"
   }
