@@ -4,7 +4,7 @@ import generateName, { randomNumber } from './nameGenerator';
 
 config();
 
-const ob = { value: 123, asd: 123, TS: process.hrtime().join('.') };
+const ob = { value: 123, asd: 123 };
 setKey('caballo-considerado-33', ob);
 setInterval(() => {
   keepAlive('caballo-considerado-33');
