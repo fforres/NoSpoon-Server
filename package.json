@@ -1,29 +1,36 @@
 {
   "scripts": {
-    "lint": "./node_modules/.bin/tslint -c tslint.json ./src/**/*.ts",
+    "lint": "./node_modules/.bin/tslint -c tslint.json ./src/**/*.ts --type-check -p ./tsconfig.json",
     "prebuild": "./node_modules/.bin/rimraf ./dist",
     "build": "./node_modules/.bin/tsc",
     "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
     "watch:debug": "nodemon -e ts -w ./src -x npm run watch:serve:debug",
-    "watch:serve:debug": "ts-node --inspect --debug-brk src/index.ts",
+    "watch:serve:debug": "ts-node --inspect src/index.ts",
+    "watch:serve:debug:break": "ts-node --inspect --inspect-brk src/index.ts",
     "watch:serve": "ts-node src/index.ts"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.11",
+    "@types/debug": "^0.0.30",
+    "@types/dotenv": "^4.0.1",
+    "@types/redis": "^2.6.0",
+    "@types/underscore": "^1.8.3",
     "debug": "^3.0.1",
     "nodemon": "^1.12.1",
     "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2",
-    "typescript-eslint-parser": "^8.0.0",
-    "@types/debug": "^0.0.30",
-    "@types/dotenv": "^4.0.1",
-    "@types/redis": "^2.6.0",
-    "@types/underscore": "^1.8.3"
+    "typescript-eslint-parser": "^8.0.0"
   },
   "dependencies": {
+    "@types/node-uuid": "^0.0.28",
+    "@types/uuid": "^3.4.2",
     "dotenv": "^4.0.0",
+    "fastify": "^0.28.2",
     "redis": "^2.8.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "uuid": "^3.1.0",
+    "uuid-random": "^1.0.6"
   }
 }
