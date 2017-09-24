@@ -1,7 +1,8 @@
 import * as d from 'debug';
 import * as f from 'fastify';
-const fastify = f();
 import { createRoom } from '../models/rooms';
+
+const fastify = f();
 const debug = d('server');
 const httpPort: number = parseInt(process.env.HTTP_PORT || '3000', 10);
 
