@@ -5,7 +5,8 @@
     "build": "./node_modules/.bin/tsc",
     "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
     "watch:debug": "nodemon -e ts -w ./src -x npm run watch:serve:debug",
-    "watch:serve:debug": "ts-node --inspect --debug-brk src/index.ts",
+    "watch:serve:debug": "ts-node --inspect src/index.ts",
+    "watch:serve:debug:break": "ts-node --inspect --inspect-brk src/index.ts",
     "watch:serve": "ts-node src/index.ts"
   },
   "devDependencies": {
