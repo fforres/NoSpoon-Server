@@ -6,6 +6,7 @@ const debug = d('redis');
 const redisHost: any = process.env.REDIS_HOST;
 const redisPort: any = process.env.REDIS_PORT;
 
+debugger;
 const host = redisHost || 'localhost';
 const port = redisPort || '6379';
 const client = createClient(port, host);
