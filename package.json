@@ -9,6 +9,7 @@
     "watch:serve": "ts-node src/index.ts"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.11",
     "@types/debug": "^0.0.30",
     "@types/dotenv": "^4.0.1",
     "@types/redis": "^2.6.0",
@@ -22,10 +23,13 @@
     "typescript-eslint-parser": "^8.0.0"
   },
   "dependencies": {
+    "@types/node-uuid": "^0.0.28",
+    "@types/uuid": "^3.4.2",
     "dotenv": "^4.0.0",
     "fastify": "^0.28.2",
     "redis": "^2.8.0",
     "underscore": "^1.8.3",
+    "uuid": "^3.1.0",
     "uuid-random": "^1.0.6"
   }
 }

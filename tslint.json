@@ -19,15 +19,16 @@
         "no-unnecessary-initializer": true,
         "no-unused-expression": true,
         "no-var-keyword": true,
-        "object-literal-sort-keys": false,
         "no-duplicate-super": true,
         "no-empty": false,
         "no-empty-interface": true,
         "no-eval": true,
         "no-inferrable-types": [
-          true,
-          "ignore-params"
-        ]
+            true,
+            "ignore-params"
+        ],
+        "object-literal-sort-keys": false,
+        "promise-function-async": true
     },
     "rulesDirectory": []
 }
