@@ -22,11 +22,20 @@ const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
 
   ws.on('pong', () => {
     ws.isAlive = true;
+    debug('received a pong from %s', req.connection.remoteAddress);
+
   });
 
-  ws.on('message', (message) => {
-    debug('received message %o', message);
+  ws.on('message', handleMessage);
+
+  ws.on('close', (message) => {
+    debug('Disconnected %s', req.connection.remoteAddress);
+    ws.isAlive = false;
   });
+};
+
+const handleMessage = (message: webSocket.Data) => {
+  debug('received message %o', message);
 };
 
 // heartbeat
@@ -40,4 +49,4 @@ setInterval(() => {
     ws.isAlive = false;
     ws.ping('', false, true);
   });
-}, 10000);
+}, 1000);
