@@ -1,15 +1,43 @@
 import * as d from 'debug';
-import { Server } from 'ws';
+import * as http from 'http';
+import * as webSocket from 'ws';
 
 const debug = d('websocket');
-
-const WSS = new Server({
-  port: parseInt(process.env.WS_PORT || '3001', 1000),
+const port = parseInt(process.env.WS_PORT || '3001', 10);
+const WSS = new webSocket.Server({
+  port,
 });
 
-WSS.on('connection', (ws, req) => {
-  console.log(req.connection.remoteAddress);
+interface INoSpoonWebSocket extends webSocket {
+  isAlive: boolean | undefined;
+}
+
+WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
+  debug('received connection from %s', req.connection.remoteAddress);
+  setEvents(ws, req);
+});
+
+const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
+  ws.isAlive = true;
+
+  ws.on('pong', () => {
+    ws.isAlive = true;
+  });
+
   ws.on('message', (message) => {
     debug('received message %o', message);
   });
-});
+};
+
+// heartbeat
+// const interval = setInterval(function ping() {
+setInterval(() => {
+  WSS.clients.forEach((ws: INoSpoonWebSocket) => {
+    if (ws.isAlive === false) {
+      return ws.terminate();
+    }
+
+    ws.isAlive = false;
+    ws.ping('', false, true);
+  });
+}, 10000);
