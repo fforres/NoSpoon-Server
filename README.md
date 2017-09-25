@@ -1,4 +1,4 @@
-# NoSpoon-Server
+# [WIP] - NoSpoon-Server
 
 ## Explanation
 WS backend Server created to serve the [NoSpoon game](https://github.com/fforres/NoSpoon) for `@fforres` talk on WebVR
