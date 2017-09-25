@@ -1,8 +1,9 @@
-import * as d from 'debug';
+import * as debug from 'debug';
 import * as http from 'http';
 import * as webSocket from 'ws';
 
-const debug = d('websocket');
+const d = debug('websocket');
+const dh = debug('websocket:heartbeat');
 const port = parseInt(process.env.WS_PORT || '3001', 10);
 const WSS = new webSocket.Server({
   port,
@@ -13,7 +14,7 @@ interface INoSpoonWebSocket extends webSocket {
 }
 
 WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
-  debug('received connection from %s', req.connection.remoteAddress);
+  d('received connection from %s', req.connection.remoteAddress);
   setEvents(ws, req);
 });
 
@@ -22,20 +23,20 @@ const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
 
   ws.on('pong', () => {
     ws.isAlive = true;
-    debug('received a pong from %s', req.connection.remoteAddress);
+    dh('received a pong from %s', req.connection.remoteAddress);
 
   });
 
   ws.on('message', handleMessage);
 
   ws.on('close', (message) => {
-    debug('Disconnected %s', req.connection.remoteAddress);
+    d('Disconnected %s', req.connection.remoteAddress);
     ws.isAlive = false;
   });
 };
 
 const handleMessage = (message: webSocket.Data) => {
-  debug('received message %o', message);
+  d('received message %o', message);
 };
 
 // heartbeat

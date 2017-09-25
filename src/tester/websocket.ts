@@ -1,19 +1,35 @@
-import * as d from 'debug';
+import * as debug from 'debug';
 import * as webSocket from 'ws';
-const debug = d('tester:websocket');
+const d = debug('websocket');
+const dh = debug('websocket:heartbeat');
 
 const ws = new webSocket(`ws://localhost:${process.env.WS_PORT}`);
+const message = (data: object) => JSON.stringify(data);
 
 ws.on('open', () => {
-  ws.send('something');
+  // Send Bullet
+  ws.send(message({
+    pos: {
+      x: 2,
+      y: 3,
+      z: 4,
+    },
+    room: 'TEST_ID',
+    rotation: {
+      x: 12,
+      y: 13,
+      z: -14,
+    },
+    type: 'createBullet',
+  }));
 });
 
 ws.on('message', (data: webSocket.Data) => {
-  debug('client: Received a message %o', data);
+  d('client: Received a message %o', data);
 });
 
 ws.on('ping', (data: webSocket.Data) => {
-  debug('client: Received a ping %o', data);
+  dh('client: Received a ping %o', data);
 });
 
 // setTimeout(() => {
