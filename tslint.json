@@ -27,7 +27,8 @@
             true,
             "ignore-params"
         ],
-        "object-literal-sort-keys": false,
+        "no-var-requires": false,
+        "object-literal-sort-keys": true,
         "promise-function-async": true
     },
     "rulesDirectory": []

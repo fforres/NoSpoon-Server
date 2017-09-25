@@ -24,5 +24,6 @@ fastify.listen(httpPort, (err) => {
     throw err;
   }
   // tslint:disable-next-line no-console
-  console.log(`server listening on ${fastify.server.address().port}`);
+  // console.log(`server listening o n ${fastify.server.address().port}`);
+  debug('server listening on %s', fastify.server.address().port);
 });

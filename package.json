@@ -3,11 +3,12 @@
     "lint": "./node_modules/.bin/tslint -c tslint.json ./src/**/*.ts --type-check -p ./tsconfig.json",
     "prebuild": "./node_modules/.bin/rimraf ./dist",
     "build": "./node_modules/.bin/tsc",
-    "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
-    "watch:debug": "nodemon -e ts -w ./src -x npm run watch:serve:debug",
-    "watch:serve:debug": "ts-node --inspect src/index.ts",
-    "watch:serve:debug:break": "ts-node --inspect --inspect-brk src/index.ts",
-    "watch:serve": "ts-node src/index.ts"
+    "watch": "nodemon -e ts -w ./src -x npm run serve",
+    "watch:debug": "cross-env __DEV__=true DEBUG=*,-nodemon* nodemon -e ts -w ./src -x npm run serve:debug",
+    "watch:debug:break": "cross-env __DEV__=true DEBUG=*,-nodemon* nodemon -e ts -w ./src -x npm run serve:debug:break",
+    "serve": "ts-node src/index.ts",
+    "serve:debug": "ts-node --inspect src/index.ts",
+    "serve:debug:break": "ts-node --inspect --inspect-brk src/index.ts"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.11",
