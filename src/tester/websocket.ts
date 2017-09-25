@@ -20,6 +20,21 @@ ws.on('open', () => {
       y: 13,
       z: -14,
     },
+    type: 'identifyUser',
+  }));
+
+  ws.send(message({
+    pos: {
+      x: 2,
+      y: 3,
+      z: 4,
+    },
+    room: 'TEST_ID',
+    rotation: {
+      x: 12,
+      y: 13,
+      z: -14,
+    },
     type: 'createBullet',
   }));
 });

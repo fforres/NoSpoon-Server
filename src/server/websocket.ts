@@ -13,6 +13,14 @@ interface INoSpoonWebSocket extends webSocket {
   isAlive: boolean | undefined;
 }
 
+enum MessageTypes { createBullet, identifyUser }
+
+interface INoSpoonMessage {
+  room: string;
+  id: string;
+  type: MessageTypes;
+}
+
 WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
   d('received connection from %s', req.connection.remoteAddress);
   setEvents(ws, req);
@@ -24,7 +32,6 @@ const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
   ws.on('pong', () => {
     ws.isAlive = true;
     dh('received a pong from %s', req.connection.remoteAddress);
-
   });
 
   ws.on('message', handleMessage);
@@ -35,7 +42,10 @@ const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
   });
 };
 
-const handleMessage = (message: webSocket.Data) => {
+const handleMessage = (message: string) => {
+  const action: INoSpoonMessage = JSON.parse(message);
+  if (action.type === MessageTypes.identifyUser) {};
+  if (action.type === MessageTypes.createBullet) {};
   d('received message %o', message);
 };
 
