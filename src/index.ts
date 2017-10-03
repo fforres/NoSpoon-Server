@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 config();
 import './server';
+import './tester';
 
 // import { setHash } from './redis';
 // const ob = { value: 123, asd: 123 };
