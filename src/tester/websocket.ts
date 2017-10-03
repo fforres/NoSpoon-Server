@@ -17,7 +17,6 @@ ws.on('open', () => {
       y: 3,
       z: 4,
     },
-    room: 'TEST_ID',
     rotation: {
       x: 12,
       y: 13,
@@ -51,8 +50,8 @@ ws.on('open', () => {
   }, 2000);
 });
 
-ws.on('message', (data: webSocket.Data) => {
-  d('client: Received a message %o', data);
+ws.on('message', (data: string) => {
+  d('CLIENT Received a message %O', JSON.parse(data));
 });
 
 ws.on('ping', (data: webSocket.Data) => {
@@ -80,8 +79,8 @@ ws2.on('open', () => {
   }));
 });
 
-ws2.on('message', (data: webSocket.Data) => {
-  d('client: Received a message %o', data);
+ws2.on('message', (data: string) => {
+  d('CLIENT Received a message %O', JSON.parse(data));
 });
 
 ws2.on('ping', (data: webSocket.Data) => {
@@ -109,8 +108,8 @@ ws3.on('open', () => {
   }));
 });
 
-ws3.on('message', (data: webSocket.Data) => {
-  d('client: Received a message %o', data);
+ws3.on('message', (data: string) => {
+  d('CLIENT Received a message %O', JSON.parse(data));
 });
 
 ws3.on('ping', (data: webSocket.Data) => {

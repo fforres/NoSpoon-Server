@@ -1,56 +1,19 @@
 import * as debug from 'debug';
 import * as http from 'http';
 import * as webSocket from 'ws';
+import {
+  INoSpoonMessage,
+  INoSpoonWebSocket,
+  MessageTypes,
+  NoSpoonWebsocketServer,
+} from './wss';
 
 const d = debug('websocket');
 const dh = debug('websocket:heartbeat');
 const port = parseInt(process.env.WS_PORT || '3001', 10);
 
-class NoSpoonWebsocketServer extends webSocket.Server {
-  public broadcast = (data: INoSpoonMessage) => {
-    const message = JSON.stringify(data);
-    this.clients.forEach((client: INoSpoonWebSocket) => {
-      if (client.isAlive === false) {
-        return client.terminate();
-      }
-      d('Is Attacker %s', !client.attacker);
-      if (client.readyState && !client.attacker) {
-        client.send(message);
-      }
-    });
-  }
-}
-
-const WSS = new NoSpoonWebsocketServer({
-  port,
-});
-
-interface INoSpoonWebSocket extends webSocket {
-  isAlive: boolean | undefined;
-  attacker: boolean;
-}
-
-enum MessageTypes {
-  createBullet = 'createBullet',
-  identifyUser = 'identifyUser',
-  bulletPosition = 'bulletPosition',
-}
-type UserTypes = 'attacker' | 'defender';
-
-interface INoSpoonMessage {
-  room: string;
-  id: string;
-  type: MessageTypes;
-  user: {
-    id: string,
-    type: UserTypes;
-  };
-}
-
-WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
-  // d('received connection from %s', req.connection.remoteAddress);
-  setEvents(ws, req);
-});
+const WSS = new NoSpoonWebsocketServer({ port });
+WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => setEvents(ws, req));
 
 const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
   ws.isAlive = true;
@@ -70,22 +33,24 @@ const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
 
 const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) => {
   if (typeof message === 'string') {
-    const action: INoSpoonMessage = JSON.parse(message);
-    if (action.type === MessageTypes.identifyUser) {
-      if (action.user.type === 'attacker') {
-        ws.attacker = true;
-        // OB.users.attacker[action.user.id] = ws;
-      } else {
-        ws.attacker = false;
+    try {
+      const action: INoSpoonMessage = JSON.parse(message);
+      d('ACTION %s', action.type);
+      d('DATA %O', action);
+      if (action.type === (MessageTypes.identifyUser as string)) {
+        if (action.user.type === 'attacker') {
+          ws.attacker = true;
+        } else {
+          ws.attacker = false;
+        }
       }
+      if (action.type === (MessageTypes.createBullet as string)) {}
+      if (action.type === (MessageTypes.bulletPosition as string)) {
+        WSS.broadcast(action);
+      }
+    } catch (e) {
+      d('ERROR!!!: %s', e);
     }
-    if (action.type === MessageTypes.createBullet) {}
-    if (action.type === ( MessageTypes.bulletPosition as string )) {
-      d('Action: %s', action.type);
-      d('Action: %s', MessageTypes.bulletPosition);
-      WSS.broadcast(action);
-    }
-    d('received message %o', action);
   }
 };
 
