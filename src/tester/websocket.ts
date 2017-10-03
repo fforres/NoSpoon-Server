@@ -37,7 +37,6 @@ ws.on('open', () => {
         y: 3,
         z: 4,
       },
-      room: 'TEST_ID',
       rotation: {
         x: 12,
         y: 13,
@@ -68,7 +67,6 @@ ws2.on('open', () => {
       y: 3,
       z: 4,
     },
-    room: 'TEST_ID',
     rotation: {
       x: 12,
       y: 13,
@@ -98,7 +96,6 @@ ws3.on('open', () => {
       y: 3,
       z: 4,
     },
-    room: 'TEST_ID',
     rotation: {
       x: 12,
       y: 13,
@@ -119,7 +116,3 @@ ws3.on('message', (data: webSocket.Data) => {
 ws3.on('ping', (data: webSocket.Data) => {
   dh('client: Received a ping %o', data);
 });
-
-// setTimeout(() => {
-//   ws.terminate();
-// }, 5000);
