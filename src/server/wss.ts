@@ -9,10 +9,10 @@ export enum MessageTypes {
   createBullet = 'createBullet',
   identifyUser = 'identifyUser',
   bulletPosition = 'bulletPosition',
+  userPosition = 'userPosition',
 }
 
 export interface INoSpoonMessage {
-  room: string;
   id: string;
   type: MessageTypes;
   user: {
@@ -22,6 +22,7 @@ export interface INoSpoonMessage {
 }
 
 export interface INoSpoonWebSocket extends webSocket {
+  id: string;
   isAlive: boolean | undefined;
   attacker: boolean;
 }
@@ -29,9 +30,12 @@ export interface INoSpoonWebSocket extends webSocket {
 export class NoSpoonWebsocketServer extends webSocket.Server {
   public broadcast = (data: INoSpoonMessage) => {
     const message = JSON.stringify(data);
-    d('Broadcasting to %s users', (this.clients.keys.length - 1) );
+    d('Broadcasting to %s users', (this.clients.keys.length) );
     d('MESSAGE: %o', message);
     this.clients.forEach((client: INoSpoonWebSocket) => {
+      if (data.user.id === client.id) {
+        return;
+      }
       if (client.isAlive === false) {
         return client.terminate();
       }

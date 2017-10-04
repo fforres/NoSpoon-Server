@@ -18,8 +18,8 @@ WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => setE
 const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
   ws.isAlive = true;
   ws.on('pong', () => {
-    ws.isAlive = true;
     dh('received a pong from %s', req.connection.remoteAddress);
+    ws.isAlive = true;
   });
 
   ws.on('message', (message) => handleMessage(message, ws));
@@ -35,8 +35,10 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
   if (typeof message === 'string') {
     try {
       const action: INoSpoonMessage = JSON.parse(message);
-      d('ACTION %s', action.type);
-      d('DATA %O', action);
+      // d('ACTION %s', action.type);
+      // d('DATA %O', action);
+      d('Identifying user %s', action.type);
+      ws.id = action.user.id;
       if (action.type === (MessageTypes.identifyUser as string)) {
         if (action.user.type === 'attacker') {
           ws.attacker = true;
@@ -45,6 +47,10 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
         }
       }
       if (action.type === (MessageTypes.createBullet as string)) {}
+      if (action.type === (MessageTypes.userPosition as string)) {
+        // d('ACTION %s', action.type);
+        WSS.broadcast(action);
+      }
       if (action.type === (MessageTypes.bulletPosition as string)) {
         WSS.broadcast(action);
       }
