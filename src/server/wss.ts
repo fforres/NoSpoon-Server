@@ -23,13 +23,13 @@ export interface INoSpoonMessage {
 
 export interface INoSpoonWebSocket extends webSocket {
   id: string;
+
   isAlive: boolean | undefined;
   attacker: boolean;
 }
 
 export class NoSpoonWebsocketServer extends webSocket.Server {
   public broadcast = (data: INoSpoonMessage) => {
-    const message = JSON.stringify(data);
     d('Broadcasting to %s users', (this.clients.keys.length) );
     d('MESSAGE: %o', message);
     this.clients.forEach((client: INoSpoonWebSocket) => {
