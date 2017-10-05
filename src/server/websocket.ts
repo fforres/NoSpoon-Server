@@ -35,11 +35,6 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
   if (typeof message === 'string') {
     try {
       const action: INoSpoonMessage = JSON.parse(message);
-<<<<<<< HEAD
-      // d('ACTION %s', action.type);
-      // d('DATA %O', action);
-=======
->>>>>>> 1f31f26c799d229457e806b47a50c34e81f917aa
       d('Identifying user %s', action.type);
       ws.id = action.user.id;
       if (action.type === (MessageTypes.identifyUser as string)) {
