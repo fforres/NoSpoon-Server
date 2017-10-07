@@ -1,5 +1,7 @@
 import * as debug from 'debug';
+import * as express from 'express';
 import * as http from 'http';
+
 import * as webSocket from 'ws';
 import {
   INoSpoonMessage,
@@ -12,7 +14,11 @@ const d = debug('websocket');
 const dh = debug('websocket:heartbeat');
 const port = parseInt(process.env.PORT || '3001', 10);
 
-const WSS = new NoSpoonWebsocketServer({ port });
+const app = express();
+const server = http.createServer(app);
+server.listen(port);
+
+const WSS = new NoSpoonWebsocketServer({ server });
 // tslint:disable-next-line
 console.log('SERVER CREATED ON PORT ', port);
 WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => setEvents(ws, req));

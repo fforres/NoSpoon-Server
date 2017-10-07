@@ -28,9 +28,11 @@
     "typescript-eslint-parser": "^8.0.0"
   },
   "dependencies": {
-    "debug": "^3.0.1",
+    "@types/express": "^4.0.37",
     "cross-env": "^5.0.5",
+    "debug": "^3.0.1",
     "dotenv": "^4.0.0",
+    "express": "^4.16.1",
     "fastify": "^0.28.2",
     "redis": "^2.8.0",
     "underscore": "^1.8.3",
