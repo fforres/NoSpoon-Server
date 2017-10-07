@@ -13,6 +13,8 @@ const dh = debug('websocket:heartbeat');
 const port = parseInt(process.env.WS_PORT || '3001', 10);
 
 const WSS = new NoSpoonWebsocketServer({ port });
+// tslint:disable-next-line
+console.log('SERVER CREATED ON PORT ', port);
 WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => setEvents(ws, req));
 
 const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
