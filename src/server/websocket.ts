@@ -20,7 +20,7 @@ server.listen(port);
 
 const WSS = new NoSpoonWebsocketServer({ server });
 // tslint:disable-next-line
-console.log('SERVER CREATED ON PORT ', port);
+console.log('SERVER HTTP + WS CREATED ON PORT ', port);
 WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => setEvents(ws, req));
 
 const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
