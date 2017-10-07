@@ -10,7 +10,7 @@ import {
 
 const d = debug('websocket');
 const dh = debug('websocket:heartbeat');
-const port = parseInt(process.env.WS_PORT || '3001', 10);
+const port = parseInt(process.env.PORT || '3001', 10);
 
 const WSS = new NoSpoonWebsocketServer({ port });
 // tslint:disable-next-line
