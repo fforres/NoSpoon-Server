@@ -1,12 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug = require("debug");
+const express = require("express");
+const http = require("http");
 const wss_1 = require("./wss");
 const d = debug('websocket');
 const dh = debug('websocket:heartbeat');
 const port = parseInt(process.env.PORT || '3001', 10);
-const WSS = new wss_1.NoSpoonWebsocketServer({ port });
-console.log('SERVER CREATED ON PORT ', port);
+const app = express();
+const server = http.createServer(app);
+server.listen(port);
+const WSS = new wss_1.NoSpoonWebsocketServer({ server });
+console.log('SERVER HTTP + WS CREATED ON PORT ', port);
 WSS.on('connection', (ws, req) => setEvents(ws, req));
 const setEvents = (ws, req) => {
     ws.isAlive = true;
