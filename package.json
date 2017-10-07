@@ -19,7 +19,6 @@
     "@types/underscore": "^1.8.3",
     "@types/uuid": "^3.4.2",
     "@types/ws": "^3.0.2",
-    "debug": "^3.0.1",
     "nodemon": "^1.12.1",
     "rimraf": "^2.6.2",
     "supports-color": "^4.4.0",
@@ -29,6 +28,7 @@
     "typescript-eslint-parser": "^8.0.0"
   },
   "dependencies": {
+    "debug": "^3.0.1",
     "cross-env": "^5.0.5",
     "dotenv": "^4.0.0",
     "fastify": "^0.28.2",
