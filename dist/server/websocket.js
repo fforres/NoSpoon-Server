@@ -4,7 +4,7 @@ const debug = require("debug");
 const wss_1 = require("./wss");
 const d = debug('websocket');
 const dh = debug('websocket:heartbeat');
-const port = parseInt(process.env.WS_PORT || '3001', 10);
+const port = parseInt(process.env.PORT || '3001', 10);
 const WSS = new wss_1.NoSpoonWebsocketServer({ port });
 console.log('SERVER CREATED ON PORT ', port);
 WSS.on('connection', (ws, req) => setEvents(ws, req));
