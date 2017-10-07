@@ -3,6 +3,7 @@
     "lint": "./node_modules/.bin/tslint -c tslint.json ./src/**/*.ts --type-check -p ./tsconfig.json",
     "prebuild": "./node_modules/.bin/rimraf ./dist",
     "build": "./node_modules/.bin/tsc",
+    "yolo": "npm run build && git push heroku master",
     "watch": "nodemon -e ts -w ./src -x npm run serve",
     "watch:debug": "cross-env __DEV__=true DEBUG=*,-nodemon*,-websocket:heartbeat nodemon -e ts -w ./src -x npm run serve:debug",
     "watch:debug:break": "cross-env __DEV__=true DEBUG=*,-nodemon*,-websocket:heartbeat nodemon -e ts -w ./src -x npm run serve:debug:break",
