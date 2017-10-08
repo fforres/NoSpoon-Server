@@ -19,6 +19,7 @@ class NoSpoonWebsocketServer extends webSocket.Server {
         };
         this.broadcast = (data) => {
             const message = JSON.stringify(data);
+            d('MESSAGE: %o', message);
             this.clients.forEach((client) => {
                 if (data.user.id === client.id) {
                     return;
@@ -26,7 +27,7 @@ class NoSpoonWebsocketServer extends webSocket.Server {
                 if (client.isAlive === false) {
                     return client.terminate();
                 }
-                if (client.readyState && !client.attacker) {
+                if (client.readyState) {
                     client.send(message);
                 }
             });
