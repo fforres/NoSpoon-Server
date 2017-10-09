@@ -18,7 +18,7 @@ const app = express();
 const server = http.createServer(app);
 server.listen(port);
 
-const WSS = new NoSpoonWebsocketServer({ server });
+const WSS = new NoSpoonWebsocketServer({ server, perMessageDeflate: true });
 // tslint:disable-next-line
 console.log('SERVER HTTP + WS CREATED ON PORT ', port);
 WSS.on('connection', (ws: INoSpoonWebSocket , req: http.IncomingMessage) => setEvents(ws, req));
@@ -40,6 +40,8 @@ const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
     } else {
       WSS.removeDefender(ws.id);
     }
+
+    // TODO: broadcast to remove user face -> WSS.broadcast(action);
   });
 
 };
@@ -65,7 +67,7 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
       // // // //
       if (action.type === (MessageTypes.createBullet as string)) {
         d('Creating bullet! %O', action);
-        WSS.sendToDefender(action);
+        WSS.broadcast(action);
       }
       if (action.type === (MessageTypes.userPosition as string)) {
         WSS.broadcast(action);

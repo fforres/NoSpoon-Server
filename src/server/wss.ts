@@ -44,7 +44,6 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
 
   public broadcast = (data: INoSpoonMessage) => {
     const message = JSON.stringify(data);
-    d('MESSAGE: %o', message);
     this.clients.forEach((client: INoSpoonWebSocket) => {
       if (data.user.id === client.id) {
         return;
@@ -82,8 +81,6 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
 
   public sendToAttacker = (data: INoSpoonMessage) => {
     const message = JSON.stringify(data);
-    d('Broadcasting to attacker');
-    d('MESSAGE: %o', message);
     Object.keys(this.data.attackers).forEach((el: string) => {
       const attacker = this.data.attackers[el];
       if (!attacker.isAlive) {
@@ -97,8 +94,6 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
 
   public sendToDefender = (data: INoSpoonMessage) => {
     const message = JSON.stringify(data);
-    d('Broadcasting to attacker');
-    d('MESSAGE: %o', message);
     Object.keys(this.data.defenders).forEach((el: string) => {
       const defender = this.data.defenders[el];
       if (!defender.isAlive) {
