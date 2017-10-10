@@ -65,6 +65,10 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
       }
 
       // // // //
+      if (action.type === (MessageTypes.userMadeAPoint as string)) {
+        d('A User made a point! %O', action);
+        WSS.broadcast(action);
+      }
       if (action.type === (MessageTypes.createBullet as string)) {
         d('Creating bullet! %O', action);
         WSS.broadcast(action);
