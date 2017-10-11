@@ -57,7 +57,7 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
         WSS.broadcast(action);
       }
       if (action.type === (MessageTypes.userPosition as string)) {
-        d('USERPOSITION %O', action);
+        // d('USERPOSITION %O', action);
         WSS.userChangedPosition(action, action.position, action.rotation);
       }
       if (action.type === (MessageTypes.bulletPosition as string)) {
