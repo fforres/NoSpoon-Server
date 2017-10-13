@@ -35,12 +35,6 @@ const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
   ws.on('close', (message) => {
     d('Disconnected %s', req.connection.remoteAddress);
     ws.isAlive = false;
-    if (ws.attacker) {
-      WSS.removeAttacker(ws.id);
-    } else {
-      WSS.removeDefender(ws.id);
-    }
-
     // TODO: broadcast to remove user face -> WSS.broadcast(action);
   });
 
@@ -51,36 +45,26 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
     try {
       const action: INoSpoonMessage = JSON.parse(message);
       // d('Identifying user %O', action);
-      if (!ws.id && action.user.id) {
-        d('%O', action);
-        ws.id = action.user.id;
-        if (action.user.isDefender) {
-          ws.attacker = false;
-          WSS.addDefender(ws);
-        } else {
-          ws.attacker = true;
-          WSS.addAttacker(ws);
-        }
-        ws.send(message);
-      }
-
+      WSS.createUser(action, ws);
       // // // //
       if (action.type === (MessageTypes.userMadeAPoint as string)) {
-        d('A User made a point! %O', action);
-        WSS.broadcast(action);
+        // d('A User made a point! %O', action);
+        WSS.userMadeAPoint(action, ws);
+        WSS.runWinLoop(ws);
       }
       if (action.type === (MessageTypes.createBullet as string)) {
-        d('Creating bullet! %O', action);
+        // d('Creating bullet! %O', action);
         WSS.broadcast(action);
       }
       if (action.type === (MessageTypes.userPosition as string)) {
-        WSS.broadcast(action);
+        // d('USERPOSITION %O', action);
+        WSS.userChangedPosition(action, action.position, action.rotation);
       }
       if (action.type === (MessageTypes.bulletPosition as string)) {
         WSS.broadcast(action);
       }
     } catch (e) {
-      d('ERROR!!!: %s', e);
+      d('========= ERROR!!! =========== \n %O', e);
     }
   }
 };
