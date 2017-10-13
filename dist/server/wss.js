@@ -5,6 +5,7 @@ const d = debug('websocket');
 const webSocket = require("ws");
 var MessageTypes;
 (function (MessageTypes) {
+    MessageTypes["userDisconnected"] = "userDisconnected";
     MessageTypes["userWon"] = "userWon";
     MessageTypes["userMadeAPoint"] = "userMadeAPoint";
     MessageTypes["createBullet"] = "createBullet";
