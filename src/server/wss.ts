@@ -6,6 +6,8 @@ import * as webSocket from 'ws';
 export type UserTypes = 'attacker' | 'defender';
 
 export enum MessageTypes {
+  userWon = 'userWon',
+  userMadeAPoint = 'userMadeAPoint',
   createBullet = 'createBullet',
   identifyUser = 'identifyUser',
   bulletPosition = 'bulletPosition',
@@ -15,10 +17,13 @@ export enum MessageTypes {
 export interface INoSpoonMessage {
   id: string;
   type: MessageTypes;
-  user: {
+  user?: {
     id: string,
     isDefender: boolean,
   };
+  position?: IPosition;
+  points?: number;
+  rotation?: IRotation;
 }
 
 export interface INoSpoonWebSocket extends webSocket {
@@ -27,25 +32,58 @@ export interface INoSpoonWebSocket extends webSocket {
   attacker: boolean;
 }
 
+export interface IPosition {
+  x: number;
+  y: number;
+  z: number;
+}
+export interface IRotation {
+  x: number;
+  y: number;
+  z: number;
+}
+
 interface IWSSDataType {
-  attackers: {
-    [id: string]: INoSpoonWebSocket;
-  };
-  defenders: {
-    [id: string]: INoSpoonWebSocket;
+  gameState: {
+    users: {
+      [id: string]: {
+        position: IPosition,
+        rotation: IRotation,
+        points: number,
+      };
+    };
+    winner: string | null;
   };
 }
 
 export class NoSpoonWebsocketServer extends webSocket.Server {
   private data: IWSSDataType = {
-    attackers: {},
-    defenders: {},
+    gameState: {
+      users: {},
+      winner: null,
+    },
   };
 
-  public broadcast = (data: INoSpoonMessage) => {
+  public broadcastEveryone = (data: INoSpoonMessage) => {
     const message = JSON.stringify(data);
     this.clients.forEach((client: INoSpoonWebSocket) => {
-      if (data.user.id === client.id) {
+      if (client.isAlive === false) {
+        return client.terminate();
+      }
+      if (client.readyState) {
+        client.send(message);
+      }
+    });
+  }
+
+  public broadcast = (action: INoSpoonMessage) => {
+    if (!action.user) {
+      return;
+    }
+    const userID = action.user.id;
+    const message = JSON.stringify(action);
+    this.clients.forEach((client: INoSpoonWebSocket) => {
+      if (userID === client.id) {
         return;
       }
       if (client.isAlive === false) {
@@ -57,52 +95,69 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
     });
   }
 
-  public removeAttacker = (id: string) => {
-    if (this.data.attackers[id]) {
-      delete this.data.attackers[id];
-      d('REMOVED ATTACKER! %S', id);
+  public createUser = (action: INoSpoonMessage, ws: INoSpoonWebSocket) => {
+    if (!action.user) {
+      return;
+    }
+    const userID = action.user.id;
+    if (!this.data.gameState.users[userID]) {
+      ws.id = userID;
+      this.data.gameState.users[userID] = {
+        points: 0,
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        rotation: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+      };
+      d('Creating a user %o %o', action, this.data.gameState.users);
+      ws.send(JSON.stringify(action));
     }
   }
-  public addAttacker = (ws: INoSpoonWebSocket) => {
-    this.data.attackers[ws.id] = ws;
-    d('ADDED ATTACKER! %O', Object.keys(this.data.attackers));
-  }
 
-  public removeDefender = (id: string) => {
-    if (this.data.defenders[id]) {
-      delete this.data.defenders[id];
-      d('REMOVED DEFENDER! %S', id);
+  public userMadeAPoint = (action: INoSpoonMessage, ws: INoSpoonWebSocket) => {
+    if (action.user) {
+      const userID = action.user.id;
+      this.data.gameState.users[userID].points += 1;
+      if (this.data.gameState.users[userID].points === 4 && !this.data.gameState.winner) {
+        this.data.gameState.winner = userID;
+      }
     }
-  }
-  public addDefender = (ws: INoSpoonWebSocket) => {
-    this.data.defenders[ws.id] = ws;
-    d('ADDED DEFENDER! %O', Object.keys(this.data.defenders));
+    d('GAME STATE %o', this.data.gameState);
   }
 
-  public sendToAttacker = (data: INoSpoonMessage) => {
-    const message = JSON.stringify(data);
-    Object.keys(this.data.attackers).forEach((el: string) => {
-      const attacker = this.data.attackers[el];
-      if (!attacker.isAlive) {
-        return attacker.terminate();
-      }
-      if (attacker.readyState && attacker.attacker) {
-        attacker.send(message);
-      }
-    });
+  public userChangedPosition = (action: INoSpoonMessage, position?: IPosition, rotation?: IPosition) => {
+    if (!position || !rotation || !action.user) {
+      return;
+    }
+    const userID = action.user.id;
+    this.data.gameState.users[userID].position = position;
+    this.data.gameState.users[userID].rotation = rotation;
+
+    const customAction: INoSpoonMessage = {
+      id: action.id,
+      points: this.data.gameState.users[userID].points,
+      position: this.data.gameState.users[userID].position,
+      rotation: this.data.gameState.users[userID].rotation,
+      type: MessageTypes.userPosition,
+      user: action.user,
+    };
+    this.broadcast(customAction);
   }
 
-  public sendToDefender = (data: INoSpoonMessage) => {
-    const message = JSON.stringify(data);
-    Object.keys(this.data.defenders).forEach((el: string) => {
-      const defender = this.data.defenders[el];
-      if (!defender.isAlive) {
-        return defender.terminate();
-      }
-      if (defender.readyState && !defender.attacker) {
-        defender.send(message);
-      }
-    });
+  public runWinLoop = (ws: INoSpoonWebSocket) => {
+    if (this.data.gameState.winner) {
+      const customAction: INoSpoonMessage = {
+        id: ws.id,
+        type: MessageTypes.userWon,
+      };
+      this.broadcastEveryone(customAction);
+    }
   }
 
 }
