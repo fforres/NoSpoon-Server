@@ -19,6 +19,7 @@ export interface INoSpoonMessage {
   type: MessageTypes;
   user?: {
     id: string,
+    userName: string,
     isDefender: boolean,
   };
   position?: IPosition;
@@ -50,6 +51,7 @@ interface IWSSDataType {
         position: IPosition,
         rotation: IRotation,
         points: number,
+        userName: string,
       };
     };
     winner: string | null;
@@ -114,6 +116,7 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
           y: 0,
           z: 0,
         },
+        userName: action.user.userName,
       };
       d('Creating a user %o %o', action, this.data.gameState.users);
       ws.send(JSON.stringify(action));
