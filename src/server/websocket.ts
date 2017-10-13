@@ -71,6 +71,12 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
       if (action.type === (MessageTypes.bulletPosition as string)) {
         WSS.broadcast(action);
       }
+
+      if (action.type === (MessageTypes.ping as string)) {
+        d('PING %O', action);
+        ws.ping('', false, true);
+      }
+
     } catch (e) {
       d('========= ERROR!!! =========== \n %O', e);
     }

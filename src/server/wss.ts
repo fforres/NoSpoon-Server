@@ -13,6 +13,7 @@ export enum MessageTypes {
   identifyUser = 'identifyUser',
   bulletPosition = 'bulletPosition',
   userPosition = 'userPosition',
+  ping = 'ping',
 }
 
 export interface INoSpoonMessage {
@@ -119,7 +120,7 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
         },
         userName: action.user.userName,
       };
-      d('Creating a user %o %o', action, this.data.gameState.users);
+      // d('Creating a user %o %o', action, this.data.gameState.users);
       ws.send(JSON.stringify(action));
     }
   }
@@ -132,7 +133,7 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
         this.data.gameState.winner = userID;
       }
     }
-    d('GAME STATE %o', this.data.gameState);
+    d('GAME STATE %o', this.data.gameState.winner);
   }
 
   public userChangedPosition = (action: INoSpoonMessage, position?: IPosition, rotation?: IPosition) => {
