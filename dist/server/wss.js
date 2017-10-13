@@ -69,6 +69,7 @@ class NoSpoonWebsocketServer extends webSocket.Server {
                         y: 0,
                         z: 0,
                     },
+                    userName: action.user.userName,
                 };
                 d('Creating a user %o %o', action, this.data.gameState.users);
                 ws.send(JSON.stringify(action));

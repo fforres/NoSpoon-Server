@@ -6,6 +6,7 @@ import * as webSocket from 'ws';
 export type UserTypes = 'attacker' | 'defender';
 
 export enum MessageTypes {
+  userDisconnected = 'userDisconnected',
   userWon = 'userWon',
   userMadeAPoint = 'userMadeAPoint',
   createBullet = 'createBullet',
