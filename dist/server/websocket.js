@@ -10,7 +10,7 @@ const port = parseInt(process.env.PORT || '3001', 10);
 const app = express();
 const server = http.createServer(app);
 server.listen(port);
-const WSS = new wss_1.NoSpoonWebsocketServer({ server });
+const WSS = new wss_1.NoSpoonWebsocketServer({ server, perMessageDeflate: true });
 console.log('SERVER HTTP + WS CREATED ON PORT ', port);
 WSS.on('connection', (ws, req) => setEvents(ws, req));
 const setEvents = (ws, req) => {
@@ -23,44 +23,29 @@ const setEvents = (ws, req) => {
     ws.on('close', (message) => {
         d('Disconnected %s', req.connection.remoteAddress);
         ws.isAlive = false;
-        if (ws.attacker) {
-            WSS.removeAttacker(ws.id);
-        }
-        else {
-            WSS.removeDefender(ws.id);
-        }
     });
 };
 const handleMessage = (message, ws) => {
     if (typeof message === 'string') {
         try {
             const action = JSON.parse(message);
-            if (!ws.id && action.user.id) {
-                d('%O', action);
-                ws.id = action.user.id;
-                if (action.user.isDefender) {
-                    ws.attacker = false;
-                    WSS.addDefender(ws);
-                }
-                else {
-                    ws.attacker = true;
-                    WSS.addAttacker(ws);
-                }
-                ws.send(message);
+            WSS.createUser(action, ws);
+            if (action.type === wss_1.MessageTypes.userMadeAPoint) {
+                WSS.userMadeAPoint(action, ws);
+                WSS.runWinLoop(ws);
             }
             if (action.type === wss_1.MessageTypes.createBullet) {
-                d('Creating bullet! %O', action);
-                WSS.sendToDefender(action);
+                WSS.broadcast(action);
             }
             if (action.type === wss_1.MessageTypes.userPosition) {
-                WSS.broadcast(action);
+                WSS.userChangedPosition(action, action.position, action.rotation);
             }
             if (action.type === wss_1.MessageTypes.bulletPosition) {
                 WSS.broadcast(action);
             }
         }
         catch (e) {
-            d('ERROR!!!: %s', e);
+            d('========= ERROR!!! =========== \n %O', e);
         }
     }
 };

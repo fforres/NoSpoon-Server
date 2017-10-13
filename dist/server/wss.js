@@ -5,6 +5,8 @@ const d = debug('websocket');
 const webSocket = require("ws");
 var MessageTypes;
 (function (MessageTypes) {
+    MessageTypes["userWon"] = "userWon";
+    MessageTypes["userMadeAPoint"] = "userMadeAPoint";
     MessageTypes["createBullet"] = "createBullet";
     MessageTypes["identifyUser"] = "identifyUser";
     MessageTypes["bulletPosition"] = "bulletPosition";
@@ -14,14 +16,30 @@ class NoSpoonWebsocketServer extends webSocket.Server {
     constructor() {
         super(...arguments);
         this.data = {
-            attackers: {},
-            defenders: {},
+            gameState: {
+                users: {},
+                winner: null,
+            },
         };
-        this.broadcast = (data) => {
+        this.broadcastEveryone = (data) => {
             const message = JSON.stringify(data);
-            d('MESSAGE: %o', message);
             this.clients.forEach((client) => {
-                if (data.user.id === client.id) {
+                if (client.isAlive === false) {
+                    return client.terminate();
+                }
+                if (client.readyState) {
+                    client.send(message);
+                }
+            });
+        };
+        this.broadcast = (action) => {
+            if (!action.user) {
+                return;
+            }
+            const userID = action.user.id;
+            const message = JSON.stringify(action);
+            this.clients.forEach((client) => {
+                if (userID === client.id) {
                     return;
                 }
                 if (client.isAlive === false) {
@@ -32,53 +50,65 @@ class NoSpoonWebsocketServer extends webSocket.Server {
                 }
             });
         };
-        this.removeAttacker = (id) => {
-            if (this.data.attackers[id]) {
-                delete this.data.attackers[id];
-                d('REMOVED ATTACKER! %S', id);
+        this.createUser = (action, ws) => {
+            if (!action.user) {
+                return;
+            }
+            const userID = action.user.id;
+            if (!this.data.gameState.users[userID]) {
+                ws.id = userID;
+                this.data.gameState.users[userID] = {
+                    points: 0,
+                    position: {
+                        x: 0,
+                        y: 0,
+                        z: 0,
+                    },
+                    rotation: {
+                        x: 0,
+                        y: 0,
+                        z: 0,
+                    },
+                };
+                d('Creating a user %o %o', action, this.data.gameState.users);
+                ws.send(JSON.stringify(action));
             }
         };
-        this.addAttacker = (ws) => {
-            this.data.attackers[ws.id] = ws;
-            d('ADDED ATTACKER! %O', Object.keys(this.data.attackers));
-        };
-        this.removeDefender = (id) => {
-            if (this.data.defenders[id]) {
-                delete this.data.defenders[id];
-                d('REMOVED DEFENDER! %S', id);
+        this.userMadeAPoint = (action, ws) => {
+            if (action.user) {
+                const userID = action.user.id;
+                this.data.gameState.users[userID].points += 1;
+                if (this.data.gameState.users[userID].points === 4 && !this.data.gameState.winner) {
+                    this.data.gameState.winner = userID;
+                }
             }
+            d('GAME STATE %o', this.data.gameState);
         };
-        this.addDefender = (ws) => {
-            this.data.defenders[ws.id] = ws;
-            d('ADDED DEFENDER! %O', Object.keys(this.data.defenders));
+        this.userChangedPosition = (action, position, rotation) => {
+            if (!position || !rotation || !action.user) {
+                return;
+            }
+            const userID = action.user.id;
+            this.data.gameState.users[userID].position = position;
+            this.data.gameState.users[userID].rotation = rotation;
+            const customAction = {
+                id: action.id,
+                points: this.data.gameState.users[userID].points,
+                position: this.data.gameState.users[userID].position,
+                rotation: this.data.gameState.users[userID].rotation,
+                type: MessageTypes.userPosition,
+                user: action.user,
+            };
+            this.broadcast(customAction);
         };
-        this.sendToAttacker = (data) => {
-            const message = JSON.stringify(data);
-            d('Broadcasting to attacker');
-            d('MESSAGE: %o', message);
-            Object.keys(this.data.attackers).forEach((el) => {
-                const attacker = this.data.attackers[el];
-                if (!attacker.isAlive) {
-                    return attacker.terminate();
-                }
-                if (attacker.readyState && attacker.attacker) {
-                    attacker.send(message);
-                }
-            });
-        };
-        this.sendToDefender = (data) => {
-            const message = JSON.stringify(data);
-            d('Broadcasting to attacker');
-            d('MESSAGE: %o', message);
-            Object.keys(this.data.defenders).forEach((el) => {
-                const defender = this.data.defenders[el];
-                if (!defender.isAlive) {
-                    return defender.terminate();
-                }
-                if (defender.readyState && !defender.attacker) {
-                    defender.send(message);
-                }
-            });
+        this.runWinLoop = (ws) => {
+            if (this.data.gameState.winner) {
+                const customAction = {
+                    id: ws.id,
+                    type: MessageTypes.userWon,
+                };
+                this.broadcastEveryone(customAction);
+            }
         };
     }
 }
