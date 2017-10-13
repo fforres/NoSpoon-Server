@@ -12,6 +12,7 @@ var MessageTypes;
     MessageTypes["identifyUser"] = "identifyUser";
     MessageTypes["bulletPosition"] = "bulletPosition";
     MessageTypes["userPosition"] = "userPosition";
+    MessageTypes["ping"] = "ping";
 })(MessageTypes = exports.MessageTypes || (exports.MessageTypes = {}));
 class NoSpoonWebsocketServer extends webSocket.Server {
     constructor() {
@@ -72,7 +73,6 @@ class NoSpoonWebsocketServer extends webSocket.Server {
                     },
                     userName: action.user.userName,
                 };
-                d('Creating a user %o %o', action, this.data.gameState.users);
                 ws.send(JSON.stringify(action));
             }
         };
@@ -84,7 +84,7 @@ class NoSpoonWebsocketServer extends webSocket.Server {
                     this.data.gameState.winner = userID;
                 }
             }
-            d('GAME STATE %o', this.data.gameState);
+            d('GAME STATE %o', this.data.gameState.winner);
         };
         this.userChangedPosition = (action, position, rotation) => {
             if (!position || !rotation || !action.user) {

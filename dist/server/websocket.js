@@ -50,6 +50,10 @@ const handleMessage = (message, ws) => {
             if (action.type === wss_1.MessageTypes.bulletPosition) {
                 WSS.broadcast(action);
             }
+            if (action.type === wss_1.MessageTypes.ping) {
+                d('PING %O', action);
+                ws.ping('', false, true);
+            }
         }
         catch (e) {
             d('========= ERROR!!! =========== \n %O', e);
