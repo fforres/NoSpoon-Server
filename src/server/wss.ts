@@ -1,5 +1,5 @@
-// import * as debug from 'debug';
-// const d = debug('websocket');
+import * as debug from 'debug';
+const d = debug('websocket');
 
 import * as webSocket from 'ws';
 
@@ -115,15 +115,20 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
           z: 0,
         },
       };
+      d('Creating a user %o %o', action, this.data.gameState.users);
       ws.send(JSON.stringify(action));
     }
   }
 
-  public userMadeAPoint = (userID: string, ws: INoSpoonWebSocket) => {
-    this.data.gameState.users[userID].points += 1;
-    if (this.data.gameState.users[userID].points === 4 && !this.data.gameState.winner) {
-      this.data.gameState.winner = userID;
+  public userMadeAPoint = (action: INoSpoonMessage, ws: INoSpoonWebSocket) => {
+    if (action.user) {
+      const userID = action.user.id;
+      this.data.gameState.users[userID].points += 1;
+      if (this.data.gameState.users[userID].points === 4 && !this.data.gameState.winner) {
+        this.data.gameState.winner = userID;
+      }
     }
+    d('GAME STATE %o', this.data.gameState);
   }
 
   public userChangedPosition = (action: INoSpoonMessage, position?: IPosition, rotation?: IPosition) => {

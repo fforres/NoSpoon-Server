@@ -48,12 +48,12 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
       WSS.createUser(action, ws);
       // // // //
       if (action.type === (MessageTypes.userMadeAPoint as string)) {
-        d('A User made a point! %O', action);
-        WSS.userMadeAPoint(action.id, ws);
+        // d('A User made a point! %O', action);
+        WSS.userMadeAPoint(action, ws);
         WSS.runWinLoop(ws);
       }
       if (action.type === (MessageTypes.createBullet as string)) {
-        d('Creating bullet! %O', action);
+        // d('Creating bullet! %O', action);
         WSS.broadcast(action);
       }
       if (action.type === (MessageTypes.userPosition as string)) {
@@ -64,7 +64,7 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
         WSS.broadcast(action);
       }
     } catch (e) {
-      d('ERROR!!!: %s', e);
+      d('========= ERROR!!! =========== \n %O', e);
     }
   }
 };
