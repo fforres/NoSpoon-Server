@@ -55,6 +55,11 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
       // d('Identifying user %O', action);
       WSS.createUser(action, ws);
       // // // //
+      if (action.type === (MessageTypes.RESET as string)) {
+        d('WEVE BEEN RESET!');
+        WSS.RESET();
+      }
+
       if (action.type === (MessageTypes.userMadeAPoint as string)) {
         // d('A User made a point! %O', action);
         WSS.userMadeAPoint(action, ws);

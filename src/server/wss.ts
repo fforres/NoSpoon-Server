@@ -6,6 +6,7 @@ import * as webSocket from 'ws';
 export type UserTypes = 'attacker' | 'defender';
 
 export enum MessageTypes {
+  RESET = 'RESET',
   userDisconnected = 'userDisconnected',
   userWon = 'userWon',
   userMadeAPoint = 'userMadeAPoint',
@@ -67,6 +68,15 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
       winner: null,
     },
   };
+
+  public RESET = () => {
+    this.data = {
+      gameState: {
+        users: {},
+        winner: null,
+      },
+    };
+  }
 
   public broadcastEveryone = (data: INoSpoonMessage) => {
     const message = JSON.stringify(data);
@@ -132,6 +142,16 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
       if (this.data.gameState.users[userID].points === 4 && !this.data.gameState.winner) {
         this.data.gameState.winner = userID;
       }
+      const customAction: INoSpoonMessage = {
+        id: ws.id,
+        type: MessageTypes.userMadeAPoint,
+        user: {
+          id: userID,
+          isDefender: false,
+          userName: this.data.gameState.users[userID].userName,
+        },
+      };
+      this.broadcastEveryone(customAction);
     }
     d('GAME STATE %o', this.data.gameState.winner);
   }
@@ -158,7 +178,7 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
   public runWinLoop = (ws: INoSpoonWebSocket) => {
     if (this.data.gameState.winner) {
       const customAction: INoSpoonMessage = {
-        id: ws.id,
+        id: this.data.gameState.winner,
         type: MessageTypes.userWon,
       };
       this.broadcastEveryone(customAction);
