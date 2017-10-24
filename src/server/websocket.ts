@@ -25,9 +25,9 @@ d('SERVER HTTP + WS CREATED ON PORT %s', port);
 
 const setEvents = (ws: INoSpoonWebSocket , req: http.IncomingMessage) => {
   ws.isAlive = true;
-  ws.on('pong', () => {
-    ws.isAlive = true;
-  });
+  // ws.on('pong', () => {
+  //   ws.isAlive = true;
+  // });
 
   ws.on('message', (message) => handleMessage(message, ws));
 
@@ -78,8 +78,8 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
       }
 
       if (action.type === (MessageTypes.ping as string)) {
-        d('PING %O', action);
-        ws.ping('', false, true);
+        // d('PING %O', action);
+        // ws.ping('', false, true);
       }
 
     } catch (e) {
@@ -89,13 +89,13 @@ const handleMessage = (message: webSocket.Data | string, ws: INoSpoonWebSocket) 
 };
 
 // heartbeat
-setInterval(() => {
-  WSS.clients.forEach((ws: INoSpoonWebSocket) => {
-    // d('TS: %s, %s', ws.isAlive, ws.id);
-    if (ws.isAlive === false) {
-      return ws.terminate();
-    }
-    ws.isAlive = false;
-    ws.ping('', false, true);
-  });
-}, 1000);
+// setInterval(() => {
+//   WSS.clients.forEach((ws: INoSpoonWebSocket) => {
+//     // d('TS: %s, %s', ws.isAlive, ws.id);
+//     if (ws.isAlive === false) {
+//       return ws.terminate();
+//     }
+//     ws.isAlive = false;
+//     ws.ping('', false, true);
+//   });
+// }, 1000);
