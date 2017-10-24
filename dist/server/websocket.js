@@ -37,6 +37,10 @@ const handleMessage = (message, ws) => {
         try {
             const action = JSON.parse(message);
             WSS.createUser(action, ws);
+            if (action.type === wss_1.MessageTypes.RESET) {
+                d('WEVE BEEN RESET!');
+                WSS.RESET();
+            }
             if (action.type === wss_1.MessageTypes.userMadeAPoint) {
                 WSS.userMadeAPoint(action, ws);
                 WSS.runWinLoop(ws);

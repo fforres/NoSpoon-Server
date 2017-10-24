@@ -5,6 +5,7 @@ const d = debug('websocket');
 const webSocket = require("ws");
 var MessageTypes;
 (function (MessageTypes) {
+    MessageTypes["RESET"] = "RESET";
     MessageTypes["userDisconnected"] = "userDisconnected";
     MessageTypes["userWon"] = "userWon";
     MessageTypes["userMadeAPoint"] = "userMadeAPoint";
@@ -22,6 +23,14 @@ class NoSpoonWebsocketServer extends webSocket.Server {
                 users: {},
                 winner: null,
             },
+        };
+        this.RESET = () => {
+            this.data = {
+                gameState: {
+                    users: {},
+                    winner: null,
+                },
+            };
         };
         this.broadcastEveryone = (data) => {
             const message = JSON.stringify(data);
@@ -83,6 +92,16 @@ class NoSpoonWebsocketServer extends webSocket.Server {
                 if (this.data.gameState.users[userID].points === 4 && !this.data.gameState.winner) {
                     this.data.gameState.winner = userID;
                 }
+                const customAction = {
+                    id: ws.id,
+                    type: MessageTypes.userMadeAPoint,
+                    user: {
+                        id: userID,
+                        isDefender: false,
+                        userName: this.data.gameState.users[userID].userName,
+                    },
+                };
+                this.broadcastEveryone(customAction);
             }
             d('GAME STATE %o', this.data.gameState.winner);
         };
@@ -106,7 +125,7 @@ class NoSpoonWebsocketServer extends webSocket.Server {
         this.runWinLoop = (ws) => {
             if (this.data.gameState.winner) {
                 const customAction = {
-                    id: ws.id,
+                    id: this.data.gameState.winner,
                     type: MessageTypes.userWon,
                 };
                 this.broadcastEveryone(customAction);
