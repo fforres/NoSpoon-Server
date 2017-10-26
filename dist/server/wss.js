@@ -129,6 +129,7 @@ class NoSpoonWebsocketServer extends webSocket.Server {
                     userName: this.data.gameState.users[userID].userName,
                     type: MessageTypes.userWon,
                 };
+                console.log(customAction);
                 this.broadcastEveryone(customAction);
             }
         };

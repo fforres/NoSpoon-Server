@@ -180,6 +180,11 @@ export class NoSpoonWebsocketServer extends webSocket.Server {
       const customAction: INoSpoonMessage = {
         id: this.data.gameState.winner,
         type: MessageTypes.userWon,
+        user: {
+          id: this.data.gameState.winner,
+          isDefender: false,
+          userName: this.data.gameState.users[this.data.gameState.winner].userName,
+        },
       };
       this.broadcastEveryone(customAction);
     }
