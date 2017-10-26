@@ -126,6 +126,7 @@ class NoSpoonWebsocketServer extends webSocket.Server {
             if (this.data.gameState.winner) {
                 const customAction = {
                     id: this.data.gameState.winner,
+                    userName: this.data.gameState.users[userID].userName,
                     type: MessageTypes.userWon,
                 };
                 this.broadcastEveryone(customAction);
