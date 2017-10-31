@@ -4,11 +4,12 @@
 WS backend Server created to serve the [NoSpoon game](https://github.com/fforres/NoSpoon) for `@fforres` talk on WebVR
 
 ## Running
-- `clone`
+- `git clone https://github.com/fforres/NoSpoon-Server.git`
+- `cd NoSpoon-Server`
 - `yarn install`
-- `donwload && run redis`
-  - You can either run your own instance, or use the supplied docker image.
-  - `docker build -t redis .` && `docker run --name redis_container -d redis`
 - `yarn run watch`
-  - `DEBUG=*,-nodemon* yarn run watch` for debugging in console
-  - `yarn run watch:debug` for running dev-tool interactive debugger
+
+## Debugging
+- Instala esta extension de chrome para debugear :)  https://chrome.google.com/webstore/detail/nim-node-inspector-manage/gnhhdgbaldcilmgcpfddgdbkhjohddkj
+- `yarn run watch:debug` para ver mensajes de debug en consola
+- `yarn run watch:debug:break` para correrlo con un breakpoint al comienzo  
