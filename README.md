@@ -1,7 +1,7 @@
 # [WIP] - NoSpoon-Server
 
 ## Explanation
-WS backend Server created to serve the [NoSpoon game](https://github.com/fforres/NoSpoon) for `@fforres` talk on WebVR
+> WS backend Server created with TypeScript to serve the [NoSpoon game](https://github.com/fforres/NoSpoon) for `@fforres` talk on WebVR
 
 ## Running
 - `git clone https://github.com/fforres/NoSpoon-Server.git`
