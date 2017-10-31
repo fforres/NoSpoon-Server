@@ -13,3 +13,8 @@
 - Instala esta extension de chrome para debugear :)  https://chrome.google.com/webstore/detail/nim-node-inspector-manage/gnhhdgbaldcilmgcpfddgdbkhjohddkj
 - `yarn run watch:debug` para ver mensajes de debug en consola
 - `yarn run watch:debug:break` para correrlo con un breakpoint al comienzo  
+
+# TODO
+- Crear rooms para evitar conflictos
+- Crear un keepalive/ping 
+- Modularizar el codebase
